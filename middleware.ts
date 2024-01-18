@@ -2,7 +2,8 @@ import NextAuth from "next-auth";
 import authConfig from "./auth.config";
 const { auth } = NextAuth(authConfig);
 import {
-  DEFAULT_LOGIN_REDIRECT,
+  DEFAULT_AFTER_LOGIN_REDIRECT,
+  ROUTE_LOGIN_PAGE,
   apiAuthPrefix,
   authRoutes,
   publicRoutes,
@@ -10,21 +11,24 @@ import {
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
-
+  // console.log(1);
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix); // api for authentication
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname); // login/register/reser-password page
-
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname); // public routes - everone can access
+  const isAuthRoute = authRoutes.includes(nextUrl.pathname); // authenticating routes
   if (isApiAuthRoute) {
+    // console.log(2);
     return null;
   }
   if (isAuthRoute) {
+    // console.log(3);
     if (isLoggedIn) {
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+      // console.log(4);
+      return Response.redirect(new URL(DEFAULT_AFTER_LOGIN_REDIRECT, nextUrl));
     }
     return null;
   }
   if (!isLoggedIn && !isPublicRoute) {
+    // console.log(5);
     let callbackUrl = nextUrl.pathname;
     if (nextUrl.search) {
       callbackUrl += nextUrl.search;
@@ -33,7 +37,7 @@ export default auth((req) => {
     const encodedCallbackUrl = encodeURIComponent(callbackUrl);
 
     return Response.redirect(
-      new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl)
+      new URL(`${ROUTE_LOGIN_PAGE}?callbackUrl=${encodedCallbackUrl}`, nextUrl)
     );
   }
 

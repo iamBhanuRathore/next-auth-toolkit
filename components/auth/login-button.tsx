@@ -4,13 +4,13 @@ import { useRouter } from "next/navigation";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { LoginForm } from "@/components/auth/login-form";
+import { ROUTE_LOGIN_PAGE } from "@/routes";
 
 interface LoginButtonProps {
   children: React.ReactNode;
   mode?: "modal" | "redirect";
   asChild?: boolean;
 }
-
 export const LoginButton = ({
   children,
   mode = "redirect",
@@ -19,7 +19,7 @@ export const LoginButton = ({
   const router = useRouter();
 
   const onClick = () => {
-    router.push("/auth/login");
+    router.push(ROUTE_LOGIN_PAGE);
   };
 
   if (mode === "modal") {

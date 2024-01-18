@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
+import { ROUTE_LOGIN_PAGE } from "@/routes";
 
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -50,7 +51,7 @@ export const RegisterForm = () => {
     <CardWrapper
       headerLabel="Create an account"
       backButtonLabel="Already have an account?"
-      backButtonHref="/auth/login"
+      backButtonHref={ROUTE_LOGIN_PAGE}
       showSocial>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

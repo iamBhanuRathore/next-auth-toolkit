@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { login } from "@/actions/login";
+import { ROUTE_AUTH_RESET_PAGE, ROUTE_REGISTER_PAGE } from "@/routes";
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
@@ -71,7 +72,7 @@ export const LoginForm = () => {
     <CardWrapper
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
-      backButtonHref="/auth/register"
+      backButtonHref={ROUTE_REGISTER_PAGE}
       showSocial>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -134,7 +135,9 @@ export const LoginForm = () => {
                         variant="link"
                         asChild
                         className="px-0 font-normal">
-                        <Link href="/auth/reset">Forgot password?</Link>
+                        <Link href={ROUTE_AUTH_RESET_PAGE}>
+                          Forgot password?
+                        </Link>
                       </Button>
                       <FormMessage />
                     </FormItem>

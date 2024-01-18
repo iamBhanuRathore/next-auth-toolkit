@@ -29,4 +29,11 @@ export const apiAuthPrefix = "/api/auth";
  * The default redirect path after logging in
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/settings";
+export const DEFAULT_AFTER_LOGIN_REDIRECT = "/settings";
+
+export const ROUTE_HOME_PAGE = "/";
+export const ROUTE_SETTINGS_PAGE = "/settings";
+export const ROUTE_LOGIN_PAGE = "/auth/login";
+export const ROUTE_REGISTER_PAGE = "/auth/register";
+export const ROUTE_ERROR_PAGE = "/auth/error";
+export const ROUTE_AUTH_RESET_PAGE = "/auth/reset";
