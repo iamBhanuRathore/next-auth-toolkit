@@ -59,9 +59,9 @@ export const LoginForm = () => {
             setSuccess(data.success);
           }
 
-          if (data?.twoFactor) {
-            setShowTwoFactor(true);
-          }
+          // if (data?.twoFactor) {
+          //   setShowTwoFactor(true);
+          // }
         })
         .catch(() => setError("Something went wrong"));
     });
