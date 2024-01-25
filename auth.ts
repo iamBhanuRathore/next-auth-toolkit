@@ -9,6 +9,27 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  callbacks: {
+    async session({ session, token }: any) {
+      // await session.
+      if (session?.user) {
+        session.user.customField = token.customField;
+        session.user.userId = token.sub;
+        console.log(session);
+      }
+      return session;
+    },
+    async jwt({ token }) {
+      // console.log("JWT", token);
+      // if (session?.user?.userId) {
+      // if (session.user) {
+      //   session.user.userId = token.sub;
+      // }
+      // }
+      token.customField = "hello";
+      return token;
+    },
+  },
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
   ...authConfig,

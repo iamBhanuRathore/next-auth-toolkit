@@ -28,5 +28,7 @@ export default {
         return null;
       },
     }),
+    GitHub,
+    Google,
   ],
 } satisfies NextAuthConfig;
