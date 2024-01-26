@@ -2,7 +2,6 @@
 
 import { signIn } from "@/auth";
 import { getUserByEmail } from "@/data/user";
-import { db } from "@/lib/db";
 import { DEFAULT_AFTER_LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema } from "@/schemas";
 import { AuthError } from "next-auth";

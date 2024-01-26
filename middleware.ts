@@ -12,7 +12,7 @@ export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
   // console.log(1);
-  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix); // api for authentication - which
+  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix); // api for authentication - which only not logged in user can access
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname); // public routes - everone can access
   const isAuthRoute = authRoutes.includes(nextUrl.pathname); // authenticating routes - logged in user cannot access them
   if (isApiAuthRoute) {

@@ -1,7 +1,10 @@
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession } from "next-auth";
 import authConfig from "@/auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./lib/db";
+import { getUserById } from "./data/user";
+import { UserRole } from "@prisma/client";
+// import { JWT } from "next-auth/jwt";
 
 export const {
   handlers: { GET, POST },
@@ -9,24 +12,35 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  pages: {
+    signIn: "",
+    error: "",
+  },
+  events: {
+    async linkAccount({ user }) {
+      await db.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() },
+      });
+    },
+  },
   callbacks: {
     async session({ session, token }: any) {
-      // await session.
-      if (session?.user) {
-        session.user.customField = token.customField;
-        session.user.userId = token.sub;
-        console.log(session);
+      // let a: DefaultSession;
+      console.log(token);
+      if (session?.user && token.sub) {
+        session.user.id = token.sub;
+      }
+      if (session?.user && token.role) {
+        session.user.role = token.role as UserRole;
       }
       return session;
     },
     async jwt({ token }) {
-      // console.log("JWT", token);
-      // if (session?.user?.userId) {
-      // if (session.user) {
-      //   session.user.userId = token.sub;
-      // }
-      // }
-      token.customField = "hello";
+      if (!token.sub) return token;
+      const existingUser = await getUserById(token.sub);
+      if (!existingUser) return token;
+      token.role = existingUser.role;
       return token;
     },
   },
