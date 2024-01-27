@@ -3,6 +3,7 @@ import authConfig from "./auth.config";
 const { auth } = NextAuth(authConfig);
 import {
   DEFAULT_AFTER_LOGIN_REDIRECT,
+  ROUTE_ERROR_PAGE,
   ROUTE_LOGIN_PAGE,
   apiAuthPrefix,
   authRoutes,
@@ -33,8 +34,16 @@ export default auth((req) => {
     if (nextUrl.search) {
       callbackUrl += nextUrl.search;
     }
-
+    console.log(nextUrl.searchParams.get("error"));
     const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+    if (nextUrl.searchParams.get("error") === "OAuthAccountNotLinked") {
+      return Response.redirect(
+        new URL(
+          `${ROUTE_ERROR_PAGE}?callbackUrl=${encodedCallbackUrl}`,
+          nextUrl
+        )
+      );
+    }
 
     return Response.redirect(
       new URL(`${ROUTE_LOGIN_PAGE}?callbackUrl=${encodedCallbackUrl}`, nextUrl)

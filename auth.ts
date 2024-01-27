@@ -13,8 +13,8 @@ export const {
   signOut,
 } = NextAuth({
   pages: {
-    signIn: "",
-    error: "",
+    signIn: "/auth/login",
+    error: "auth/error",
   },
   events: {
     async linkAccount({ user }) {
@@ -27,7 +27,7 @@ export const {
   callbacks: {
     async session({ session, token }: any) {
       // let a: DefaultSession;
-      console.log(token);
+      // console.log(token);
       if (session?.user && token.sub) {
         session.user.id = token.sub;
       }
