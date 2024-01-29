@@ -2,6 +2,7 @@
 
 import { signIn } from "@/auth";
 import { getUserByEmail } from "@/data/user";
+import { sendMail } from "@/lib/sendmail";
 import { generateVerificationToken } from "@/lib/tokens";
 import { DEFAULT_AFTER_LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema } from "@/schemas";
@@ -16,6 +17,11 @@ export const login = async (
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
+  console.log("there");
+  await sendMail()
+    .then((res) => console.log("MAIL SUCCESS", res))
+    .catch((err) => console.log("MAIL ERROR", err));
+  console.log("here");
   const { email, password, code } = validatedFields.data;
   const existingUser = await getUserByEmail(email);
 
@@ -28,6 +34,7 @@ export const login = async (
     const varificationToken = await generateVerificationToken(
       existingUser.email
     );
+
     return { success: "Confirmation Email Sent" };
   }
   try {
