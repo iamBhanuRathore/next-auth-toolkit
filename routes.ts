@@ -1,9 +1,19 @@
+export const ROUTE_HOME_PAGE = "/";
+export const ROUTE_SETTINGS_PAGE = "/settings";
+export const ROUTE_LOGIN_PAGE = "/auth/login";
+export const ROUTE_REGISTER_PAGE = "/auth/register";
+export const ROUTE_ERROR_PAGE = "/auth/error";
+export const ROUTE_RESET_PAGE = "/auth/reset";
+export const ROUTE_NEW_PASSWORD = "/auth/new-password";
+export const ROUTE_NEW_VERIFICATION = "/auth/new-verification";
+export const API_AUTH_PREFIX = "/auth/api";
+
 /**
  * An array of routes that are accessible to the public
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes = ["/", "/auth/new-verification"];
+export const publicRoutes = [ROUTE_HOME_PAGE, ROUTE_NEW_VERIFICATION];
 
 /**
  * An array of routes that are used for authentication
@@ -11,11 +21,11 @@ export const publicRoutes = ["/", "/auth/new-verification"];
  * @type {string[]}
  */
 export const authRoutes = [
-  "/auth/login",
-  "/auth/register",
-  "/auth/error",
-  "/auth/reset",
-  "/auth/new-password",
+  ROUTE_LOGIN_PAGE,
+  ROUTE_REGISTER_PAGE,
+  ROUTE_ERROR_PAGE,
+  ROUTE_RESET_PAGE,
+  ROUTE_NEW_PASSWORD,
 ];
 
 /**
@@ -23,17 +33,12 @@ export const authRoutes = [
  * Routes that start with this prefix are used for API authentication purposes
  * @type {string}
  */
-export const apiAuthPrefix = "/api/auth";
+export const apiAuthPrefix = API_AUTH_PREFIX;
 
 /**
  * The default redirect path after logging in
  * @type {string}
  */
-export const DEFAULT_AFTER_LOGIN_REDIRECT = "/settings";
+export const DEFAULT_AFTER_LOGIN_REDIRECT = ROUTE_SETTINGS_PAGE;
 
-export const ROUTE_HOME_PAGE = "/";
-export const ROUTE_SETTINGS_PAGE = "/settings";
-export const ROUTE_LOGIN_PAGE = "/auth/login";
-export const ROUTE_REGISTER_PAGE = "/auth/register";
-export const ROUTE_ERROR_PAGE = "/auth/error";
-export const ROUTE_AUTH_RESET_PAGE = "/auth/reset";
+

@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { login } from "@/actions/login";
-import { ROUTE_AUTH_RESET_PAGE, ROUTE_REGISTER_PAGE } from "@/routes";
+import { ROUTE_RESET_PAGE, ROUTE_REGISTER_PAGE } from "@/routes";
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
@@ -135,7 +135,7 @@ export const LoginForm = () => {
                         variant="link"
                         asChild
                         className="px-0 font-normal">
-                        <Link href={ROUTE_AUTH_RESET_PAGE}>
+                        <Link href={ROUTE_RESET_PAGE}>
                           Forgot password?
                         </Link>
                       </Button>

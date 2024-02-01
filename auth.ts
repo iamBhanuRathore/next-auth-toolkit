@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./lib/db";
 import { getUserById } from "./data/user";
 import { UserRole } from "@prisma/client";
+import { ROUTE_ERROR_PAGE, ROUTE_LOGIN_PAGE } from "./routes";
 // import { JWT } from "next-auth/jwt";
 
 export const {
@@ -13,8 +14,8 @@ export const {
   signOut,
 } = NextAuth({
   pages: {
-    signIn: "/auth/login",
-    error: "auth/error",
+    signIn: ROUTE_LOGIN_PAGE,
+    error: ROUTE_ERROR_PAGE,
   },
   events: {
     async linkAccount({ user }) {

@@ -165,4 +165,4 @@ export const EmailTemplate = ({
     </body>
   </html>
   `;
-};
+};  

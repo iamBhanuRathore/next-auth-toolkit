@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import React from "react";
 import { signOut } from "@/auth";
+import { Button } from "@/components/ui/button";
 // import { LogoutButton } from "@/componentss/auth/logout-button";
 const SettingsPage = async () => {
   const session = await auth();
@@ -12,7 +13,7 @@ const SettingsPage = async () => {
           "use server";
           await signOut();
         }}>
-        <button type="submit">Sign Out</button>
+        <Button type="submit">Sign Out</Button>
       </form>
       {/* <LogoutButton>Logout</LogoutButton> */}
     </div>

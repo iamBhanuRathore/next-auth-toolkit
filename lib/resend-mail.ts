@@ -1,3 +1,4 @@
+import { ROUTE_NEW_PASSWORD, ROUTE_NEW_VERIFICATION } from "@/routes";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -14,7 +15,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
 };
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const resetLink = `${domain}/auth/new-password?token=${token}`;
+  const resetLink = `${domain}${ROUTE_NEW_PASSWORD}?token=${token}`;
 
   await resend.emails.send({
     from: "mail@auth-masterclass-tutorial.com",
@@ -25,7 +26,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 };
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-  const confirmLink = `${domain}/auth/new-verification?token=${token}`;
+  const confirmLink = `${domain}${ROUTE_NEW_VERIFICATION}?token=${token}`;
 
   await resend.emails.send({
     from: "mail@auth-masterclass-tutorial.com",
