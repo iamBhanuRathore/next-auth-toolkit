@@ -17,11 +17,6 @@ export const login = async (
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
-  console.log("there");
-  await sendMail()
-    .then((res) => console.log("MAIL SUCCESS", res))
-    .catch((err) => console.log("MAIL ERROR", err));
-  console.log("here");
   const { email, password, code } = validatedFields.data;
   const existingUser = await getUserByEmail(email);
 
@@ -30,11 +25,20 @@ export const login = async (
     return { error: "Email does not exist!" };
   }
   // if user exist but the email is not verified
-  if (existingUser?.emailVerified) {
-    const varificationToken = await generateVerificationToken(
+  if (!existingUser?.emailVerified) {
+    const verificationToken = await generateVerificationToken(
       existingUser.email
     );
-
+    // props for sending mail --
+    await sendMail({
+      token: verificationToken.token,
+      username: existingUser.name as string,
+      userMail: existingUser.email,
+    })
+      .then((res) => console.log("MAIL SUCCESS", res))
+      .catch(() => {
+        return { error: "Error While sending the Mail.." };
+      });
     return { success: "Confirmation Email Sent" };
   }
   try {
@@ -48,6 +52,8 @@ export const login = async (
       switch (error.type) {
         case "CredentialsSignin":
           return { error: "Invalid credentials!" };
+        case "AuthorizedCallbackError":
+          return { error: "Google Auth Error" };
         default:
           return { error: "Something went wrong!" };
       }

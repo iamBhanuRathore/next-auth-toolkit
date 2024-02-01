@@ -5,6 +5,7 @@ import { RegisterSchema } from "@/schemas";
 import { db } from "@/lib/db";
 import { getUserByEmail } from "@/data/user";
 import { generateVerificationToken } from "@/lib/tokens";
+import { sendMail } from "@/lib/sendmail";
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);
   if (!validatedFields.success) {
@@ -19,7 +20,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   if (existingUser) {
     return { error: "Email already in use!" };
   }
-  await db.user.create({
+  const newUser = await db.user.create({
     data: {
       name,
       email,
@@ -28,6 +29,16 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   });
   // TODO: send verification token email
   const verificationToken = await generateVerificationToken(email);
+  // props for mail
+  await sendMail({
+    token: verificationToken.token,
+    username: newUser.name as string,
+    userMail: newUser.email as string,
+  })
+    .then((res) => console.log("MAIL SUCCESS", res))
+    .catch(() => {
+      return { error: "Error While sending the Mail.." };
+    });
   return {
     success: "Confirmation email sent!",
     verificationToken: verificationToken.token,

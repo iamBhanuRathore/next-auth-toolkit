@@ -11,14 +11,12 @@ const oauth2Client = new OAuth2(
 oauth2Client.setCredentials({
   refresh_token: process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
 });
-
-export async function sendMail(
-  data = {
-    email: "bhanuofficepes@gmail.com",
-    subject: "This is subject of my mail",
-    message: "This is the text message of my mail",
-  }
-) {
+type Props = {
+  token: string;
+  username: string;
+  userMail: string;
+};
+export async function sendMail({ token, userMail, username }: Props) {
   const accessToken = oauth2Client.getAccessToken((err, accessToken) => {
     if (err) {
       console.error("GoogleToken Error", err.message);
@@ -28,7 +26,7 @@ export async function sendMail(
     // Use the access token to send the email
   });
   const transporter = nodemailer.createTransport({
-    // smtpTransport({
+    //@ts-ignore
     service: "gmail",
     auth: {
       type: "OAuth2",
@@ -43,13 +41,12 @@ export async function sendMail(
     },
   });
   const mailOptions = {
-    from: `NEXT-AUTH-TOOLKIT <${process.env.GOOGLE_MAIL}>`,
-    to: data.email,
-    subject: data.subject,
+    from: `NEXT-AUTH-TOOLKIT <${process.env.VERIFICATION_CODE_EMAIL}>`,
+    to: userMail,
+    subject: "Authentication Mail !",
     html: EmailTemplate({
-      username: "Reciever's Name",
-      companyName: "Next Auth Toolkit",
-      otp: "696969",
+      username,
+      token,
     }),
   };
   // console.log({ mailOptions });

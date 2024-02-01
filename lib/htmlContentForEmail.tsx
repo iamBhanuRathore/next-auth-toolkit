@@ -1,14 +1,12 @@
-import React from "react";
-
 export const EmailTemplate = ({
   username,
-  companyName,
-  otp,
+  token,
 }: {
   username: string;
-  companyName: string;
-  otp: string;
+  token: string;
 }) => {
+  const confirmLink = `${process.env.NEXT_APP_URL}/auth/new-verification?token=${token}`;
+  const companyName = process.env.PRODUCT_NAME;
   return `<!DOCTYPE html>
   <html lang="en">
     <head>
@@ -144,9 +142,9 @@ export const EmailTemplate = ({
             <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
           </svg>
           <h2 class="title">Email Confirmation</h2>
-          <h3 class="otp">OTP: ${otp}</h3>
+          <a href='${confirmLink}'>Verify To Continue</a>
           <p class="info-text">
-            Thank you for choosing our service! To complete your account
+            Thank you for choosing our service ${username}! To complete your account
             registration, please use the following One-Time Password (OTP):
             <a class="info-link" href="#">{receiver's mail}</a>. This OTP is valid
             for a short period. Please enter it on our website/app to verify your
