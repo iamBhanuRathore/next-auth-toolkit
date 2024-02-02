@@ -1,7 +1,7 @@
-import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 
 import { db } from "@/lib/db";
+import { TokenType } from "@prisma/client";
 // import { getVerificationTokenByEmail } from "@/data/verification-token";
 // import { getPasswordResetTokenByEmail } from "@/data/password-reset-token";
 // import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
@@ -54,17 +54,18 @@ import { db } from "@/lib/db";
 //   return passwordResetToken;
 // };
 
-export const generateVerificationToken = async (email: string) => {
+export const generateVerificationToken = async (email: string, tokenType: TokenType) => {
   const token = uuidv4();
   const expire = new Date(new Date().getTime() + 5 * 60 * 1000); // 5 minutes
 
   const verficationToken = await db.verificationToken.upsert({
-    where: { email },
+    where: { email, tokenType },
     update: {
       token,
       expire,
     },
     create: {
+      tokenType,
       email,
       expire,
       token,

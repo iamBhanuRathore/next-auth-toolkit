@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 
 export const newVerification = async (token: string) => {
   // finding token in verification table
-  const existingToken = await getVerificationTokenByToken(token);
+  const existingToken = await getVerificationTokenByToken(token, 'VERIFICATION');
   if (!existingToken) {
     return {
       error: "Token does not exist !",
@@ -35,7 +35,7 @@ export const newVerification = async (token: string) => {
   });
   // after updating the mail we can simply delete the verification token from the database
   await db.verificationToken.delete({
-    where: { id: existingToken.id },
+    where: { id: existingToken.id, tokenType: "VERIFICATION" },
   });
   return {
     success: "Email Verified !",

@@ -27,7 +27,8 @@ export const login = async (
   // if user exist but the email is not verified
   if (!existingUser?.emailVerified) {
     const verificationToken = await generateVerificationToken(
-      existingUser.email
+      existingUser.email,
+      'VERIFICATION'
     );
     // props for sending mail --
     await sendMail({

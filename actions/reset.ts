@@ -1,7 +1,6 @@
 'use server';
 
 import { getUserByEmail } from "@/data/user";
-import { db } from "@/lib/db";
 import { ResetSchema } from "@/schemas";
 import * as z from "zod";
 
@@ -9,7 +8,7 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
     const validatedFields = ResetSchema.safeParse(values);
     if (!validatedFields.success) {
         return {
-            error: "Invalidate Email !"
+            error: "Invalid Email !"
         };
     }
     const { email } = validatedFields.data;
