@@ -1,6 +1,8 @@
 'use server';
 
 import { getUserByEmail } from "@/data/user";
+import { sendMail } from "@/lib/sendmail";
+import { generateVerificationToken } from "@/lib/tokens";
 import { ResetSchema } from "@/schemas";
 import * as z from "zod";
 
@@ -18,7 +20,13 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
             error: "Email not found !"
         };
     }
-    // Todo: Generate token and send mail
+    const passwordResetToken = await generateVerificationToken(email, 'RESETPASSWORD');
+    await sendMail({
+        emailType: "password-reset",
+        token: passwordResetToken.token,
+        userMail: passwordResetToken.email,
+        username: existingUser.name || ""
+    });
     return {
         success: "Reset Email sent !"
     };

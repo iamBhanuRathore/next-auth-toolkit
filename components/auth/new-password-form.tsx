@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { ResetSchema } from "@/schemas";
+import { NewPasswordSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -20,33 +20,39 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { ROUTE_LOGIN_PAGE } from "@/routes";
-import { reset } from "@/actions/reset";
-export const ResetForm = () => {
+import { useSearchParams } from "next/navigation";
+import { newPassword } from "@/actions/new-password";
+
+export const NewPasswordForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-
-  const form = useForm<z.infer<typeof ResetSchema>>({
-    resolver: zodResolver(ResetSchema),
+  // fo getting token from the url
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+  const form = useForm<z.infer<typeof NewPasswordSchema>>({
+    resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
-      email: "",
+      confirmPassword: "",
+      password: ""
     },
   });
-  const onSubmit = (values: z.infer<typeof ResetSchema>) => {
+  const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     setError("");
     setSuccess("");
     console.log(values);
     startTransition(() => {
-      reset(values)
+      newPassword(values, token)
         .then((data) => {
-          if (data?.error) {
-            form.reset();
-            setError(data.error);
-          }
-          if (data?.success) {
-            form.reset();
-            setSuccess(data.success);
-          }
+          // if (data?.error) {
+          //   form.reset();
+          //   setError(data.error);
+          // }
+
+          // if (data?.success) {
+          //   form.reset();
+          //   setSuccess(data.success);
+          // }
 
           // if (data?.twoFactor) {
           //   setShowTwoFactor(true);
@@ -58,7 +64,7 @@ export const ResetForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Forgot your password"
+      headerLabel="Enter a new Password"
       backButtonLabel="Back to login"
       backButtonHref={ROUTE_LOGIN_PAGE}
     >
@@ -67,16 +73,34 @@ export const ResetForm = () => {
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="email"
+              name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="john.doe@example.com"
-                      type="email"
+                      placeholder="******"
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="******"
+                      type="password"
                     />
                   </FormControl>
                   <FormMessage />
@@ -84,10 +108,11 @@ export const ResetForm = () => {
               )}
             />
           </div>
+          <FormMessage />
           <FormError message={error} />
           <FormSuccess message={success} />
           <Button disabled={isPending} type="submit" className="w-full">
-            Send Reset Email
+            Reset Password
           </Button>
         </form>
       </Form>

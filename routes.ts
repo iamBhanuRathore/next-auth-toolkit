@@ -6,7 +6,7 @@ export const ROUTE_ERROR_PAGE = "/auth/error";
 export const ROUTE_RESET_PAGE = "/auth/reset";
 export const ROUTE_NEW_PASSWORD = "/auth/new-password";
 export const ROUTE_NEW_VERIFICATION = "/auth/new-verification";
-export const API_AUTH_PREFIX = "/auth/api";
+export const API_AUTH_PREFIX = "/api/auth";
 
 /**
  * An array of routes that are accessible to the public

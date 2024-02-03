@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
-import { EmailTemplate } from "./htmlContentForEmail";
+import { EmailVerificationTemplate } from "./html-verfication-email";
+import { PasswordResetEmailTemplate } from "./html-reset-email";
 
 const OAuth2 = google.auth.OAuth2;
 const oauth2Client = new OAuth2(
@@ -15,8 +16,15 @@ type Props = {
   token: string;
   username: string;
   userMail: string;
+  emailType: "verification" | "password-reset";
 };
-export async function sendMail({ token, userMail, username }: Props) {
+type MailTemplateFunction = (props: { username: string; token: string; }) => string;
+
+export async function sendMail({ token, userMail, username, emailType }: Props) {
+  const mailTemplateConfig: Record<Props['emailType'], MailTemplateFunction> = {
+    "verification": EmailVerificationTemplate,
+    "password-reset": PasswordResetEmailTemplate
+  };
   const accessToken = oauth2Client.getAccessToken((err, accessToken) => {
     if (err) {
       console.error("GoogleToken Error", err.message);
@@ -41,10 +49,10 @@ export async function sendMail({ token, userMail, username }: Props) {
     },
   });
   const mailOptions = {
-    from: `NEXT-AUTH-TOOLKIT <${process.env.VERIFICATION_CODE_EMAIL}>`,
+    from: `NEXT-AUTH-TOOLKIT`,
     to: userMail,
     subject: "Authentication Mail !",
-    html: EmailTemplate({
+    html: mailTemplateConfig[emailType]({
       username,
       token,
     }),
@@ -52,3 +60,4 @@ export async function sendMail({ token, userMail, username }: Props) {
   // console.log({ mailOptions });
   await transporter.sendMail(mailOptions);
 }
+

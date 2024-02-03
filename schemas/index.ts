@@ -44,6 +44,12 @@ export const NewPasswordSchema = z.object({
   password: z.string().min(6, {
     message: "Minimum of 6 characters required",
   }),
+  confirmPassword: z.string().min(6, {
+    message: "Minimum of 6 characters required",
+  })
+}).refine(({ confirmPassword, password }) => password === confirmPassword, {
+  message: "Password don't match",
+  path: ['confirmPassword'] // path describing wher the error is happening
 });
 
 export const ResetSchema = z.object({

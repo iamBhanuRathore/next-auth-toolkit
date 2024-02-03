@@ -35,6 +35,7 @@ export const login = async (
       token: verificationToken.token,
       username: existingUser.name as string,
       userMail: existingUser.email,
+      emailType: "verification"
     })
       .then((res) => console.log("MAIL SUCCESS", res))
       .catch(() => {
