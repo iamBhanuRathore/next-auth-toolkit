@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import { google } from "googleapis";
 import { EmailVerificationTemplate } from "./html-verfication-email";
 import { PasswordResetEmailTemplate } from "./html-reset-email";
+import { TwoFactorOTPTemplate } from "./html-two-factor-email";
 
 const OAuth2 = google.auth.OAuth2;
 const oauth2Client = new OAuth2(
@@ -16,19 +17,20 @@ type Props = {
   token: string;
   username: string;
   userMail: string;
-  emailType: "verification" | "password-reset";
+  emailType: "verification" | "password-reset" | 'two-factor';
 };
 type MailTemplateFunction = (props: { username: string; token: string; }) => string;
 
 export async function sendMail({ token, userMail, username, emailType }: Props) {
   const mailTemplateConfig: Record<Props['emailType'], MailTemplateFunction> = {
     "verification": EmailVerificationTemplate,
-    "password-reset": PasswordResetEmailTemplate
+    "password-reset": PasswordResetEmailTemplate,
+    'two-factor': TwoFactorOTPTemplate
   };
   const accessToken = oauth2Client.getAccessToken((err, accessToken) => {
     if (err) {
       console.error("GoogleToken Error", err.message);
-      return;
+      throw Error(err.message);
     }
     return accessToken;
     // Use the access token to send the email

@@ -1,65 +1,27 @@
 import { v4 as uuidv4 } from "uuid";
+import crypto from 'crypto';
 
 import { db } from "@/lib/db";
 import { TokenType } from "@prisma/client";
-// import { getVerificationTokenByEmail } from "@/data/verification-token";
-// import { getPasswordResetTokenByEmail } from "@/data/password-reset-token";
-// import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
-
-// export const generateTwoFactorToken = async (email: string) => {
-//   const token = crypto.randomInt(100_000, 1_000_000).toString();
-//   const expires = new Date(new Date().getTime() + 5 * 60 * 1000);
-
-//   const existingToken = await getTwoFactorTokenByEmail(email);
-
-//   if (existingToken) {
-//     await db.twoFactorToken.delete({
-//       where: {
-//         id: existingToken.id,
-//       },
-//     });
-//   }
-
-//   const twoFactorToken = await db.twoFactorToken.create({
-//     data: {
-//       email,
-//       token,
-//       expires,
-//     },
-//   });
-
-//   return twoFactorToken;
-// };
-
-// export const generatePasswordResetToken = async (email: string) => {
-//   const token = uuidv4();
-//   const expires = new Date(new Date().getTime() + 3600 * 1000);
-
-//   const existingToken = await getPasswordResetTokenByEmail(email);
-
-//   if (existingToken) {
-//     await db.passwordResetToken.delete({
-//       where: { id: existingToken.id },
-//     });
-//   }
-
-//   const passwordResetToken = await db.passwordResetToken.create({
-//     data: {
-//       email,
-//       token,
-//       expires,
-//     },
-//   });
-
-//   return passwordResetToken;
-// };
 
 export const generateVerificationToken = async (email: string, tokenType: TokenType) => {
-  const token = uuidv4();
+  // If we are using token for a two factor authentication then we need the token to be readable by human so we create a otp or on other type verification we create a non human readable token because we are authenticating it by ourself
+  let token: string;
+  if (tokenType === 'TWOFACTOR') {
+    token = crypto.randomInt(100_000, 1_000_000).toString();
+  } else {
+    token = uuidv4();
+  }
+  // const token = uuidv4();
   const expire = new Date(new Date().getTime() + 5 * 60 * 1000); // 5 minutes
-
+  console.log(email, token, tokenType, expire);
   const verficationToken = await db.verificationToken.upsert({
-    where: { email, tokenType },
+    where: {
+      email_tokenType: {
+        email,
+        tokenType
+      }
+    },
     update: {
       token,
       expire,
@@ -75,7 +37,6 @@ export const generateVerificationToken = async (email: string, tokenType: TokenT
   // ANOTHER APPROACH
 
   //   const existingToken = await getVerificationTokenByEmail(email);
-
   //   if (existingToken) {
   //     await db.verificationToken.delete({
   //       where: {
@@ -83,7 +44,6 @@ export const generateVerificationToken = async (email: string, tokenType: TokenT
   //       },
   //     });
   //   }
-
   //   const verficationToken = await db.verificationToken.create({
   //     data: {
   //       email,

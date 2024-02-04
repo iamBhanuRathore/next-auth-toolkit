@@ -20,7 +20,7 @@ export const login = async (
   const { email, password, code } = validatedFields.data;
   const existingUser = await getUserByEmail(email);
 
-  // CHECK --- if user exist and user has not logged in with other providers
+  // CHECK --- if user exist and user has not logged in with other providers than credentials
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { error: "Email does not exist!" };
   }
@@ -42,6 +42,19 @@ export const login = async (
         return { error: "Error While sending the Mail.." };
       });
     return { success: "Confirmation Email Sent" };
+  }
+  // if user's two factor authentication is enabled
+  if (existingUser.isTwoFactorEnabled && existingUser.email) {
+    console.log("before");
+    const twoFactorConfirmation = await generateVerificationToken(existingUser.email, 'TWOFACTOR');
+    console.log("after");
+    await sendMail({
+      emailType: "two-factor",
+      token: twoFactorConfirmation.token,
+      userMail: existingUser.email,
+      username: existingUser.name || "User"
+    });
+    return { twoFactor: true };
   }
   try {
     await signIn("credentials", {

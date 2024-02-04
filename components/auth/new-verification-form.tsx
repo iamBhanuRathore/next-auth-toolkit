@@ -26,7 +26,7 @@ const NewVerificationForm = () => {
       setError("Something Went Wrong !");
     });
   }, [token, success, error]);
-  console.log("Hello from verification form");
+  // console.log("Hello from verification form");
   useEffect(() => {
     onSubmit();
   }, [onSubmit]);

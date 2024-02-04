@@ -44,7 +44,7 @@ export const EmailVerificationTemplate = ({
             margin-top: 10px;
             padding: 10px 15px;
             background-color: #4299e1;
-            color: #ffffff;
+            color: #ededed !important;
             text-decoration: none;
             border-radius: 5px;
           }

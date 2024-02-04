@@ -43,7 +43,7 @@ export const PasswordResetEmailTemplate = ({
             margin-top: 10px;
             padding: 10px 15px;
             background-color: #4299e1;
-            color: #ffffff;
+            color: #ffffff !important;
             text-decoration: none;
             border-radius: 5px;
           }
@@ -63,7 +63,7 @@ export const PasswordResetEmailTemplate = ({
       <body>
         <div class="container">
           <h1>Password Reset</h1>
-          <p>Hello ${username},</p>
+          <p>Hello <b>${username}</b>,</p>
           <p>We received a request to reset your password for ${companyName} account.</p>
           <p>If you made this request, please click on the following link to reset your password:</p>
           <a href="${verificationLink}">Reset Password</a>
@@ -71,7 +71,7 @@ export const PasswordResetEmailTemplate = ({
           <a href="${verificationLink}">${verificationLink}</a>
           <p>If you did not request a password reset, please disregard this email.</p>
           <p>Best regards,</p>
-          <p>${companyName} Team</p>
+          <p><b>${companyName}</b> Team</p>
         </div>
         <footer class="footer">
           <p>© ${new Date().getFullYear()} ${companyName}</p>

@@ -44,15 +44,15 @@ export const NewPasswordForm = () => {
     startTransition(() => {
       newPassword(values, token)
         .then((data) => {
-          // if (data?.error) {
-          //   form.reset();
-          //   setError(data.error);
-          // }
+          if (data?.error) {
+            form.reset();
+            setError(data.error);
+          }
 
-          // if (data?.success) {
-          //   form.reset();
-          //   setSuccess(data.success);
-          // }
+          if (data?.success) {
+            form.reset();
+            setSuccess(data.success);
+          }
 
           // if (data?.twoFactor) {
           //   setShowTwoFactor(true);

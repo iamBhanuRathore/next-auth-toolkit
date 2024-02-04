@@ -1,10 +1,11 @@
-import NextAuth, { DefaultSession } from "next-auth";
+import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./lib/db";
 import { getUserById } from "./data/user";
 import { UserRole } from "@prisma/client";
 import { ROUTE_ERROR_PAGE, ROUTE_LOGIN_PAGE } from "./routes";
+import { getTwoFactorConfirmationByUserId } from "./lib/two-factor-confirmation";
 // import { JWT } from "next-auth/jwt";
 
 export const {
@@ -27,13 +28,24 @@ export const {
   },
   callbacks: {
     async signIn({ user, account }) {
-      // Allow OAuth without email verfication
+
+      // Allow OAuth (google,github) without email verfication
       if (account?.provider !== "credentials") return true;
 
       const existingUser = await getUserById(user.id as string);
+      // Prevent sign-in without email-verification
       if (!existingUser?.emailVerified) return false;
-
-      // TODO: two factor authentication
+      // checking if the use enabled two factor authentication
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+        if (!twoFactorConfirmation) return false;
+        // Delete the two factor confirmation for next sign in
+        await db.twoFactorConfirmation.delete({
+          where: {
+            id: twoFactorConfirmation.id
+          }
+        });
+      }
       return true;
     },
     async session({ session, token }: any) {

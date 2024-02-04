@@ -4,7 +4,7 @@ import { TokenType } from "@prisma/client";
 export const getVerificationTokenByToken = async (token: string, tokenType: TokenType) => {
   try {
     const verificationToken = await db.verificationToken.findUnique({
-      where: { token, tokenType },
+      where: { token_tokenType: { token, tokenType } },
     });
 
     return verificationToken;
@@ -16,7 +16,7 @@ export const getVerificationTokenByToken = async (token: string, tokenType: Toke
 export const getVerificationTokenByEmail = async (email: string, tokenType: TokenType) => {
   try {
     const verificationToken = await db.verificationToken.findUnique({
-      where: { email, tokenType },
+      where: { email_tokenType: { email, tokenType } },
     });
 
     return verificationToken;

@@ -2,10 +2,12 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import OtpInput from 'react-otp-input';
+
 
 import { LoginSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
@@ -23,6 +25,7 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { login } from "@/actions/login";
 import { ROUTE_RESET_PAGE, ROUTE_REGISTER_PAGE } from "@/routes";
+import { Loader2 } from "lucide-react";
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
@@ -30,6 +33,7 @@ export const LoginForm = () => {
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider!"
       : "";
+
 
   const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [error, setError] = useState<string | undefined>("");
@@ -40,13 +44,14 @@ export const LoginForm = () => {
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
-      password: "",
+      password: ""
     },
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
     setSuccess("");
+    console.log({ values });
     startTransition(() => {
       login(values, callbackUrl)
         .then((data) => {
@@ -60,41 +65,49 @@ export const LoginForm = () => {
             setSuccess(data.success);
           }
 
-          // if (data?.twoFactor) {
-          //   setShowTwoFactor(true);
-          // }
+          if (data?.twoFactor) {
+            setShowTwoFactor(true);
+          }
         })
         .catch(() => setError("Something went wrong"));
     });
   };
-
   return (
     <CardWrapper
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
       backButtonHref={ROUTE_REGISTER_PAGE}
-      showSocial>
+      showSocial={!showTwoFactor}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
             {showTwoFactor && (
-              <FormField
-                control={form.control}
-                name="code"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Two Factor Code</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isPending}
-                        placeholder="123456"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex items-center gap-x-5">
+                <FormField
+                  control={form.control}
+                  name="code"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>OTP</FormLabel>
+                      <FormControl>
+                        <OtpInput
+                          {...field}
+                          inputStyle={{
+                            width: 35,
+                            height: 35,
+                            margin: 5
+                          }}
+                          inputType="tel"
+                          numInputs={6}
+                          renderInput={(props) => <Input  {...props} disabled={isPending} className="p-0" />}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {isPending && <Loader2 className="animate-spin" />}
+              </div>
             )}
             {!showTwoFactor && (
               <>

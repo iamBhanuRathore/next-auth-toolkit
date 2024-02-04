@@ -56,18 +56,19 @@ enum TokenType {
 
 model VerificationToken {
   id        String    @id @default(cuid())
-  email     String    @unique
-  token     String    @unique
+  email     String
+  token     String
   expire    DateTime
   tokenType TokenType
 
-  @@unique([email, token, tokenType])
+  @@unique([email, tokenType])
+  @@unique([token, tokenType])
 }
 
 model TwoFactorConfirmation {
   id     String @id @default(cuid())
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
 }
