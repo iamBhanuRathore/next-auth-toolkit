@@ -49,9 +49,9 @@ export const LoginForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    console.log(values);
     setError("");
     setSuccess("");
-    console.log({ values });
     startTransition(() => {
       login(values, callbackUrl)
         .then((data) => {
@@ -68,10 +68,18 @@ export const LoginForm = () => {
           if (data?.twoFactor) {
             setShowTwoFactor(true);
           }
+          if (data?.codeError) {
+            setError(data.codeError);
+          }
         })
         .catch(() => setError("Something went wrong"));
     });
   };
+  useEffect(() => {
+    if ((form?.getValues()?.code?.length || 0) >= 6) {
+      onSubmit(form.getValues());
+    }
+  }, [form.getValues().code, showTwoFactor]);
   return (
     <CardWrapper
       headerLabel="Welcome back"
@@ -82,7 +90,7 @@ export const LoginForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
             {showTwoFactor && (
-              <div className="flex items-center gap-x-5">
+              <div className="flex items-end gap-x-5">
                 <FormField
                   control={form.control}
                   name="code"
@@ -99,7 +107,7 @@ export const LoginForm = () => {
                           }}
                           inputType="tel"
                           numInputs={6}
-                          renderInput={(props) => <Input  {...props} disabled={isPending} className="p-0" />}
+                          renderInput={(props) => <Input  {...props} disabled={isPending} className="p-0 border-zinc-500" />}
                         />
                       </FormControl>
                       <FormMessage />

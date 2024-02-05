@@ -20,6 +20,7 @@ export const {
   },
   events: {
     async linkAccount({ user }) {
+      console.log("Event: linkAccount");
       await db.user.update({
         where: { id: user.id },
         data: { emailVerified: new Date() },
@@ -28,6 +29,7 @@ export const {
   },
   callbacks: {
     async signIn({ user, account }) {
+      console.log("Callback: SignIn");
 
       // Allow OAuth (google,github) without email verfication
       if (account?.provider !== "credentials") return true;
@@ -35,7 +37,7 @@ export const {
       const existingUser = await getUserById(user.id as string);
       // Prevent sign-in without email-verification
       if (!existingUser?.emailVerified) return false;
-      // checking if the use enabled two factor authentication
+      // checking if the user enabled two factor authentication
       if (existingUser.isTwoFactorEnabled) {
         const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
         if (!twoFactorConfirmation) return false;
@@ -50,7 +52,7 @@ export const {
     },
     async session({ session, token }: any) {
       // let a: DefaultSession;
-      // console.log(token);
+      console.log("Callback: Session");
       if (session?.user && token.sub) {
         session.user.id = token.sub;
       }
@@ -60,6 +62,7 @@ export const {
       return session;
     },
     async jwt({ token }) {
+      console.log("Callback: JWT");
       if (!token.sub) return token;
       const existingUser = await getUserById(token.sub);
       if (!existingUser) return token;

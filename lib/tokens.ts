@@ -14,7 +14,7 @@ export const generateVerificationToken = async (email: string, tokenType: TokenT
   }
   // const token = uuidv4();
   const expire = new Date(new Date().getTime() + 5 * 60 * 1000); // 5 minutes
-  console.log(email, token, tokenType, expire);
+  // console.log(email, token, tokenType, expire);
   const verficationToken = await db.verificationToken.upsert({
     where: {
       email_tokenType: {
