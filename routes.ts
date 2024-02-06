@@ -1,5 +1,11 @@
 export const ROUTE_HOME_PAGE = "/";
+
 export const ROUTE_SETTINGS_PAGE = "/settings";
+export const ROUTE_USER_PAGE = "/home";
+export const ROUTE_SERVER_PAGE = "/server";
+export const ROUTE_CLIENT_PAGE = "/client";
+export const ROUTE_ADMIN_PAGE = "/admin";
+
 export const ROUTE_LOGIN_PAGE = "/auth/login";
 export const ROUTE_REGISTER_PAGE = "/auth/register";
 export const ROUTE_ERROR_PAGE = "/auth/error";

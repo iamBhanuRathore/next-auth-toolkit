@@ -1,16 +1,18 @@
 'use client';
+import { logout } from '@/actions/logout';
 import { Button } from '@/components/ui/button';
-import { useSession, signOut } from 'next-auth/react';
+import { useCurrentUser } from '@/hooks/use-current-user';
+import { signOut } from 'next-auth/react';
 import React from 'react';
 
 const HomePage = () => {
-    const { data, status, update } = useSession();
-    console.log({ data, status, update });
-    const onClick = () => {
-        signOut();
+    const user = useCurrentUser();
+    const onClick = async () => {
+        // it is useful when we want to some server stuff before logout like removing the session and also some analytics for the data
+        await logout();
     };
     return (
-        <div>{JSON.stringify(data)}
+        <div>
             <Button onClick={onClick}>Sign Out</Button>
         </div>
     );

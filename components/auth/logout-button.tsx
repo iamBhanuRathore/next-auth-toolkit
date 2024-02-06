@@ -1,16 +1,16 @@
 "use client";
 
-// import { signOut } from "next-auth/react";
+// import { signOut } from "next-auth/react"; // we can also use this method
 
-// import { logout } from "@/actions/logout";
+import { logout } from "@/actions/logout";
 
-interface LogoutButtonProps {
+interface Props {
   children?: React.ReactNode;
 }
 
-export const LogoutButton = ({ children }: LogoutButtonProps) => {
+export const LogoutButton = ({ children }: Props) => {
   const onClick = async () => {
-    // logout();
+    logout();
     // await signOut();
     // await signOut({});
   };

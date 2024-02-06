@@ -50,6 +50,9 @@ export const TwoFactorOTPTemplate = ({
               color: #6b7280;
               font-size: 0.8rem;
             }
+            .token{
+              font-size:1.5rem
+            }
           </style>
         </head>
         <body>
@@ -57,7 +60,7 @@ export const TwoFactorOTPTemplate = ({
             <h1>Two-Factor Authentication</h1>
             <p>Hello <b>${username}</b>,</p>
             <p>We have received a request to verify your identity using two-factor authentication.</p>
-            <p>Your One-Time Password (OTP) is: <code>${token}</code></p>
+            <p>Your One-Time Password (OTP) is: <code class='token'>${token}</code></p>
             <p>This OTP is valid for a short period. Please do not share it with anyone.</p>
             <p>If you did not initiate this request, please disregard this email.</p>
             <p>Best regards,</p>
