@@ -33,25 +33,28 @@ export const {
 
       // Allow OAuth (google,github) without email verfication
       if (account?.provider !== "credentials") return true;
-
+      // console.log({ user, account });
       const existingUser = await getUserById(user.id as string);
+      // TODO: USER image not showing
       // Prevent sign-in without email-verification
       if (!existingUser?.emailVerified) return false;
       // checking if the user enabled two factor authentication
       if (existingUser.isTwoFactorEnabled) {
-        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+          existingUser.id
+        );
         if (!twoFactorConfirmation) return false;
         // Delete the two factor confirmation for next sign in
         await db.twoFactorConfirmation.delete({
           where: {
-            id: twoFactorConfirmation.id
-          }
+            id: twoFactorConfirmation.id,
+          },
         });
       }
       return true;
     },
     async session({ session, token }: any) {
-      // let a: DefaultSession;
+      // we cant use token value throughout the app but we can use the session values in the app so we adding all the values in the session which we need through out the app
       console.log("Callback: Session");
       if (session?.user && token.sub) {
         session.user.id = token.sub;
@@ -59,14 +62,25 @@ export const {
       if (session?.user && token.role) {
         session.user.role = token.role as UserRole;
       }
+      if (session?.user && token.isTwoFactorEnabled) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+      }
+      if (session?.user) {
+        session.user.name = token.name;
+        session.user.email = token.email;
+      }
       return session;
     },
     async jwt({ token }) {
       console.log("Callback: JWT");
+      // adding more properties in token using the id
       if (!token.sub) return token;
       const existingUser = await getUserById(token.sub);
       if (!existingUser) return token;
       token.role = existingUser.role;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       return token;
     },
   },

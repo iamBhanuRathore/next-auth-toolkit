@@ -1,13 +1,14 @@
-import { useServerUser } from '@/hooks/user-current-user-server';
-import React from 'react';
+import UserInfo from "@/components/user-info";
+import { useServerUser } from "@/hooks/use-server-user";
+import React from "react";
 
 const ServerPage = async () => {
-    const session = await useServerUser();
-    return (
-        <div>
-            {JSON.stringify(session)}
-        </div>
-    );
+  const user = await useServerUser();
+  return (
+    <div>
+      <UserInfo label="💻 Server Component" user={user} />
+    </div>
+  );
 };
 
 export default ServerPage;

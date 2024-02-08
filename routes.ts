@@ -46,5 +46,3 @@ export const apiAuthPrefix = API_AUTH_PREFIX;
  * @type {string}
  */
 export const DEFAULT_AFTER_LOGIN_REDIRECT = ROUTE_SETTINGS_PAGE;
-
-

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
+import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
           zIndex={1600}
           showAtBottom={false}
         />
+        <Toaster />
         {children}
       </body>
     </html>
