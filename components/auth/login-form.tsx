@@ -6,8 +6,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import OtpInput from 'react-otp-input';
-
+import OtpInput from "react-otp-input";
 
 import { LoginSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
@@ -33,8 +32,6 @@ export const LoginForm = () => {
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider!"
       : "";
-
-
   const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
@@ -44,7 +41,7 @@ export const LoginForm = () => {
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
-      password: ""
+      password: "",
     },
   });
 
@@ -103,11 +100,17 @@ export const LoginForm = () => {
                           inputStyle={{
                             width: 35,
                             height: 35,
-                            margin: 5
+                            margin: 5,
                           }}
                           inputType="tel"
                           numInputs={6}
-                          renderInput={(props) => <Input  {...props} disabled={isPending} className="p-0 border-zinc-500" />}
+                          renderInput={(props) => (
+                            <Input
+                              {...props}
+                              disabled={isPending}
+                              className="p-0 border-zinc-500"
+                            />
+                          )}
                         />
                       </FormControl>
                       <FormMessage />
@@ -156,9 +159,7 @@ export const LoginForm = () => {
                         variant="link"
                         asChild
                         className="px-0 font-normal">
-                        <Link href={ROUTE_RESET_PAGE}>
-                          Forgot password?
-                        </Link>
+                        <Link href={ROUTE_RESET_PAGE}>Forgot password?</Link>
                       </Button>
                       <FormMessage />
                     </FormItem>

@@ -6,6 +6,7 @@ import { getUserById } from "./data/user";
 import { UserRole } from "@prisma/client";
 import { ROUTE_ERROR_PAGE, ROUTE_LOGIN_PAGE } from "./routes";
 import { getTwoFactorConfirmationByUserId } from "./lib/two-factor-confirmation";
+import { getAccountByUserId } from "./data/accounts";
 // import { JWT } from "next-auth/jwt";
 
 export const {
@@ -68,6 +69,7 @@ export const {
       if (session?.user) {
         session.user.name = token.name;
         session.user.email = token.email;
+        session.user.isOAuth = token.isOAuth as boolean;
       }
       return session;
     },
@@ -77,6 +79,9 @@ export const {
       if (!token.sub) return token;
       const existingUser = await getUserById(token.sub);
       if (!existingUser) return token;
+      // if the accound is found it means that the user is logged in through the OAuth
+      const existingAccount = await getAccountByUserId(existingUser.id);
+      token.isOAuth = !!existingAccount;
       token.role = existingUser.role;
       token.name = existingUser.name;
       token.email = existingUser.email;
