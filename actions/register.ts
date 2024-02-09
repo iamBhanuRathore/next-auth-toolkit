@@ -28,13 +28,17 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     },
   });
   // TODO: send verification token email
-  const verificationToken = await generateVerificationToken(email, 'VERIFICATION');
+  const verificationToken = await generateVerificationToken(
+    email,
+    "VERIFICATION",
+    newUser.id
+  );
   // props for mail
   await sendMail({
     token: verificationToken.token,
     username: newUser.name as string,
     userMail: newUser.email as string,
-    emailType: "verification"
+    emailType: "verification",
   })
     .then((res) => console.log("MAIL SUCCESS", res))
     .catch(() => {

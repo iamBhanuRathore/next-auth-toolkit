@@ -46,6 +46,7 @@ model User {
   isTwoFactorEnabled    Boolean                @default(false)
   accounts              Account[]
   TwoFactorConfirmation TwoFactorConfirmation?
+  VerificationToken     VerificationToken[]
 }
 
 enum TokenType {
@@ -56,6 +57,8 @@ enum TokenType {
 
 model VerificationToken {
   id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
   email     String
   token     String
   expire    DateTime

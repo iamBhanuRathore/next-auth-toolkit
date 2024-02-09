@@ -1,12 +1,15 @@
 "use server";
 
-import { getUserByEmail } from "@/data/user";
+import { getUserById } from "@/data/user";
 import { getVerificationTokenByToken } from "@/data/verification-token";
 import { db } from "@/lib/db";
 
 export const newVerification = async (token: string) => {
   // finding token in verification table
-  const existingToken = await getVerificationTokenByToken(token, 'VERIFICATION');
+  const existingToken = await getVerificationTokenByToken(
+    token,
+    "VERIFICATION"
+  );
   if (!existingToken) {
     return {
       error: "Token does not exist !",
@@ -20,7 +23,7 @@ export const newVerification = async (token: string) => {
     };
   }
   // finding user by the email got from the verification token table
-  const existingUser = await getUserByEmail(existingToken.email);
+  const existingUser = await getUserById(existingToken.userId);
   if (!existingUser) {
     return {
       error: "Email does not exist",
@@ -30,7 +33,7 @@ export const newVerification = async (token: string) => {
     where: { id: existingUser.id },
     data: {
       emailVerified: new Date(),
-      email: existingToken.email, // we dont-have to update this on registration but when we update the user email through token then we have to update this which is a same process thats why we updating them in this so that we can reuse this same action again
+      email: existingToken.email, // we dont-have to update this on registration but when we update the user's email through token then we have to update this which is a same process thats why we updating them in this so that we can reuse this same action again
     },
   });
   // after updating the mail we can simply delete the verification token from the database

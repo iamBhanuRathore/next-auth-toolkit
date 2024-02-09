@@ -46,7 +46,7 @@ const SettingsPage = () => {
       email: user?.email || undefined,
       password: undefined,
       newPassword: undefined,
-      role: user?.role,
+      role: user?.role || undefined,
     },
   });
   const onSubmit = async (values: z.infer<typeof SettingsSchema>) => {
@@ -62,7 +62,7 @@ const SettingsPage = () => {
           if (res.error) {
             console.log("Error");
             update();
-            setSuccess(res.error);
+            setError(res.error);
           }
         })
         .catch((err) => {
@@ -121,7 +121,7 @@ const SettingsPage = () => {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>Old Password</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -158,7 +158,7 @@ const SettingsPage = () => {
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-md border p-3 shadow-sm">
                         <div className="space-y-0.5">
-                          <FormLabel>Teo Factor Authentication</FormLabel>
+                          <FormLabel>Two Factor Authentication</FormLabel>
                           <FormDescription>
                             Enable Two factor Authentication for your account
                           </FormDescription>
