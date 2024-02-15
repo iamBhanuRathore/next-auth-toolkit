@@ -6,26 +6,34 @@ import { TwoFactorOTPTemplate } from "./html-two-factor-email";
 
 const OAuth2 = google.auth.OAuth2;
 const oauth2Client = new OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_CLIENT_REDIRECT_URL // Redirect URL
+  process.env.MAIL_CLIENT_ID,
+  process.env.MAIL_CLIENT_SECRET,
+  process.env.MAIL_REDIRECT_URL // Redirect URL
 );
 oauth2Client.setCredentials({
-  refresh_token: process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
+  refresh_token: process.env.MAIL_REFRESH_TOKEN,
 });
 type Props = {
   token: string;
   username: string;
   userMail: string;
-  emailType: "verification" | "password-reset" | 'two-factor';
+  emailType: "verification" | "password-reset" | "two-factor";
 };
-type MailTemplateFunction = (props: { username: string; token: string; }) => string;
+type MailTemplateFunction = (props: {
+  username: string;
+  token: string;
+}) => string;
 
-export async function sendMail({ token, userMail, username, emailType }: Props) {
-  const mailTemplateConfig: Record<Props['emailType'], MailTemplateFunction> = {
-    "verification": EmailVerificationTemplate,
+export async function sendMail({
+  token,
+  userMail,
+  username,
+  emailType,
+}: Props) {
+  const mailTemplateConfig: Record<Props["emailType"], MailTemplateFunction> = {
+    verification: EmailVerificationTemplate,
     "password-reset": PasswordResetEmailTemplate,
-    'two-factor': TwoFactorOTPTemplate
+    "two-factor": TwoFactorOTPTemplate,
   };
   const accessToken = oauth2Client.getAccessToken((err, accessToken) => {
     if (err) {
@@ -41,9 +49,9 @@ export async function sendMail({ token, userMail, username, emailType }: Props) 
     auth: {
       type: "OAuth2",
       user: process.env.GOOGLE_MAIL,
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      refreshToken: process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
+      clientId: process.env.MAIL_CLIENT_ID,
+      clientSecret: process.env.MAIL_CLIENT_SECRET,
+      refreshToken: process.env.MAIL_REFRESH_TOKEN,
       accessToken: accessToken,
     },
     tls: {
@@ -62,4 +70,3 @@ export async function sendMail({ token, userMail, username, emailType }: Props) 
   // console.log({ mailOptions });
   await transporter.sendMail(mailOptions);
 }
-
